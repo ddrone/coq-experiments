@@ -153,3 +153,26 @@ Proof.
     f_equal.
     apply IHx.
 Qed.
+
+Theorem add_correct_2 (x y : B) : to_nat (add x y) = to_nat x + to_nat y.
+Proof.
+  revert y.
+  induction x; intros.
+  - reflexivity.
+  - destruct y.
+    + simpl. lia.
+    + simpl. rewrite IHx. lia.
+    + simpl. rewrite to_nat_lemma. rewrite IHx. lia.
+  - destruct y.
+    + simpl. lia.
+    + simpl. rewrite to_nat_lemma. rewrite IHx. lia.
+    + simpl. rewrite to_nat_lemma. rewrite IHx. lia.
+Qed.
+
+Definition double (b : B) : B := add b b.
+
+Theorem double_correct (b : B) : to_nat (double b) = 2 * to_nat b.
+Proof.
+  unfold double.
+  rewrite add_correct_2. lia.
+Qed.
