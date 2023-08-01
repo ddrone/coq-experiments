@@ -171,3 +171,54 @@ Proof.
   unfold double.
   rewrite add_correct. lia.
 Qed.
+
+(*
+  What about multiplication?
+
+  mul(0, y) = 0
+  mul(2x+1, y) = (2x + 1) * y = 2xy + y
+  mul(2x+2, y) = (2x + 2) * y = 2xy + 2y
+*)
+
+Fixpoint mult (x y : B) : B :=
+  match x with
+  | Z => Z
+  | B1 x => add (double (mult x y)) y
+  | B2 x => double (add (mult x y) y)
+  end.
+
+Theorem mult_correct (x y : B) : to_nat (mult x y) = to_nat x * to_nat y.
+Proof.
+  induction x.
+  * reflexivity.
+  * simpl. rewrite add_correct. rewrite double_correct. rewrite IHx. lia.
+  * simpl. rewrite double_correct. rewrite add_correct. rewrite IHx. lia.
+Qed.
+
+(*
+  An easy way to check performance is following:
+  * Define a factorial on natural numbers
+  * Define a factorial via binary numbers
+
+  The first one struggles a lot at 10.
+*)
+
+Fixpoint fact_nat (n : nat) : nat :=
+  match n with
+  | O => 1
+  | S n => (S n) * fact_nat n
+  end.
+
+(* The next line takes several seconds. *)
+(* Compute fact_nat 9. *)
+
+Fixpoint fact_acc (n : nat) (acc : B) : B :=
+  match n with
+  | O => acc
+  | S n => fact_acc n (mult (from_nat (S n)) acc)
+  end.
+
+Definition fact_bin (n : nat) := to_nat (fact_acc n (B1 Z)).
+
+(* This one is also noticeably slow, not sure how to compare those properly. *)
+(* Compute fact_bin 9. *)
