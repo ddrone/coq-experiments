@@ -142,19 +142,7 @@ Proof.
     + simpl. rewrite IHx. reflexivity.
 Qed.
 
-Theorem add_correct (x y : nat) : to_nat (add (from_nat x) (from_nat y)) = x + y.
-Proof.
-  revert y.
-  induction x; intros.
-  - simpl. apply to_nat_from_nat.
-  - simpl.
-    rewrite add_succ.
-    rewrite to_nat_lemma.
-    f_equal.
-    apply IHx.
-Qed.
-
-Theorem add_correct_2 (x y : B) : to_nat (add x y) = to_nat x + to_nat y.
+Theorem add_correct (x y : B) : to_nat (add x y) = to_nat x + to_nat y.
 Proof.
   revert y.
   induction x; intros.
@@ -169,10 +157,17 @@ Proof.
     + simpl. rewrite to_nat_lemma. rewrite IHx. lia.
 Qed.
 
+Theorem add_correct_simple (x y : nat) : to_nat (add (from_nat x) (from_nat y)) = x + y.
+Proof.
+  rewrite add_correct.
+  repeat (rewrite to_nat_from_nat).
+  reflexivity.
+Qed.
+
 Definition double (b : B) : B := add b b.
 
 Theorem double_correct (b : B) : to_nat (double b) = 2 * to_nat b.
 Proof.
   unfold double.
-  rewrite add_correct_2. lia.
+  rewrite add_correct. lia.
 Qed.
