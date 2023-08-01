@@ -125,9 +125,6 @@ Fixpoint add (x y : B) : B :=
     end
   end.
 
-Definition add_via_bin (x y : nat) : nat :=
-  to_nat (add (from_nat x) (from_nat y)).
-
 Theorem add_one (x : B) : add (succ Z) x = succ x.
 Proof.
   destruct x; reflexivity.
@@ -145,15 +142,14 @@ Proof.
     + simpl. rewrite IHx. reflexivity.
 Qed.
 
-Theorem add_correct (x y : nat) : add_via_bin x y = x + y.
+Theorem add_correct (x y : nat) : to_nat (add (from_nat x) (from_nat y)) = x + y.
 Proof.
   revert y.
-  induction x; intros; unfold add_via_bin.
+  induction x; intros.
   - simpl. apply to_nat_from_nat.
   - simpl.
     rewrite add_succ.
     rewrite to_nat_lemma.
     f_equal.
-    change (add_via_bin x y = x + y).
     apply IHx.
 Qed.
