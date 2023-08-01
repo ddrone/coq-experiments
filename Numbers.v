@@ -218,7 +218,11 @@ Fixpoint fact_acc (n : nat) (acc : B) : B :=
   | S n => fact_acc n (mult (from_nat (S n)) acc)
   end.
 
-Definition fact_bin (n : nat) := to_nat (fact_acc n (B1 Z)).
+Definition fact_bin (n : nat) := fact_acc n (B1 Z).
 
-(* This one is also noticeably slow, not sure how to compare those properly. *)
-(* Compute fact_bin 9. *)
+(*
+  Conversion to natural numbers is extremely slow, but the computation seems to be
+  performed instantly for small n.
+*)
+
+(* Compute fact_bin 100. *)
